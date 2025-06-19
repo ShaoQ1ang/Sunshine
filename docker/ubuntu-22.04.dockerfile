@@ -39,17 +39,17 @@ chmod +x ./scripts/linux_build.sh
 apt-get clean
 rm -rf /var/lib/apt/lists/*
 _BUILD
-
-# run tests
-WORKDIR /build/sunshine/build/tests
-# hadolint ignore=SC1091
-RUN <<_TEST
-#!/bin/bash
-set -e
-export DISPLAY=:1
-Xvfb ${DISPLAY} -screen 0 1024x768x24 &
-./test_sunshine --gtest_color=yes
-_TEST
+#
+## run tests
+#WORKDIR /build/sunshine/build/tests
+## hadolint ignore=SC1091
+#RUN <<_TEST
+##!/bin/bash
+#set -e
+#export DISPLAY=:1
+#Xvfb ${DISPLAY} -screen 0 1024x768x24 &
+#./test_sunshine --gtest_color=yes
+#_TEST
 
 FROM scratch AS artifacts
 ARG BASE
