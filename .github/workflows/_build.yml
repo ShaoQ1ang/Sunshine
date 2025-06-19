@@ -201,7 +201,7 @@ jobs:
           REPOSITORY=${{ github.repository }}
 
           REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2 | tr '[:upper:]' '[:lower:]')
-          DOCKER_HUB_PREFIX="${DOCKER_HUB_USERNAME}/${REPO_NAME}"
+          DOCKER_HUB_PREFIX="${{ secrets.DOCKER_HUB_USERNAME }}/${REPO_NAME}"
 
           DOCKER_TAGS="${DOCKER_HUB_PREFIX}:${COMMIT:0:7}${{ matrix.tag }}"
           GHCR_TAGS="ghcr.io/${GITHUB_REPO}:${COMMIT:0:7}${{ matrix.tag }}"
