@@ -63,7 +63,7 @@ jobs:
       - name: Find dockerfiles
         id: find
         run: |
-          dockerfiles=$(find . -type f -iname "Dockerfile" -o -iname "*.dockerfile")
+          dockerfiles=$(find . -type f -iname "Dockerfile" -o -iname "ubuntu-24.04.dockerfile")
 
           echo "found dockerfiles: ${dockerfiles}"
 
@@ -293,36 +293,16 @@ jobs:
           username: ${{ secrets.GH_BOT_NAME }}
           password: ${{ secrets.GH_BOT_TOKEN }}
 
-#      - name: Build artifacts
-#        if: steps.prepare.outputs.artifacts == 'true'
-#        id: build_artifacts
-#        uses: docker/build-push-action@v6
-#        with:
-#          context: ./
-#          file: ${{ matrix.dockerfile }}
-#          target: artifacts
-#          outputs: type=local,dest=artifacts
-#          push: false
-#          platforms: ${{ steps.prepare.outputs.platforms }}
-#          build-args: |
-#            BRANCH=${{ steps.prepare.outputs.branch }}
-#            BUILD_DATE=${{ steps.prepare.outputs.build_date }}
-#            BUILD_VERSION=${{ needs.setup_release.outputs.release_tag }}
-#            COMMIT=${{ needs.setup_release.outputs.release_commit }}
-#            CLONE_URL=${{ steps.prepare.outputs.clone_url }}
-#            RELEASE=${{ needs.setup_release.outputs.publish_release }}
-#          tags: ${{ steps.prepare.outputs.tags }}
-#          cache-from: type=local,src=/tmp/.buildx-cache
-#          cache-to: type=local,dest=/tmp/.buildx-cache
-#          no-cache-filters: ${{ steps.prepare.outputs.no_cache_filters }}
-#
-      - name: Build and push
-        id: build
+      - name: Build artifacts
+        if: steps.prepare.outputs.artifacts == 'true'
+        id: build_artifacts
         uses: docker/build-push-action@v6
         with:
           context: ./
           file: ${{ matrix.dockerfile }}
-          push: ${{ needs.setup_release.outputs.publish_release }}
+          target: artifacts
+          outputs: type=local,dest=artifacts
+          push: false
           platforms: ${{ steps.prepare.outputs.platforms }}
           build-args: |
             BRANCH=${{ steps.prepare.outputs.branch }}
@@ -335,6 +315,26 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           no-cache-filters: ${{ steps.prepare.outputs.no_cache_filters }}
+
+#      - name: Build and push
+#        id: build
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: ./
+#          file: ${{ matrix.dockerfile }}
+#          push: ${{ needs.setup_release.outputs.publish_release }}
+#          platforms: ${{ steps.prepare.outputs.platforms }}
+#          build-args: |
+#            BRANCH=${{ steps.prepare.outputs.branch }}
+#            BUILD_DATE=${{ steps.prepare.outputs.build_date }}
+#            BUILD_VERSION=${{ needs.setup_release.outputs.release_tag }}
+#            COMMIT=${{ needs.setup_release.outputs.release_commit }}
+#            CLONE_URL=${{ steps.prepare.outputs.clone_url }}
+#            RELEASE=${{ needs.setup_release.outputs.publish_release }}
+#          tags: ${{ steps.prepare.outputs.tags }}
+#          cache-from: type=local,src=/tmp/.buildx-cache
+#          cache-to: type=local,dest=/tmp/.buildx-cache
+#          no-cache-filters: ${{ steps.prepare.outputs.no_cache_filters }}
 
       - name: Arrange Artifacts
         if: steps.prepare.outputs.artifacts == 'true'
